@@ -1,0 +1,100 @@
+//ayto systhmataki kontrolarei thn kateyuynsh sthn opoia 
+//koitaei h epifaneia sthn opoia to egkathistoume.
+//An milame gia ena hliako panel shmainei oti tha parei tiw megistew dynates times gia thn aporofhsh hliakhs energeias.
+
+//Opws blepete xrhsimopoihsame 4 fwtoeuesthhtous aisthhthres stis 4 kateuthunseis panw , katw, deksia, aristera wste
+//na metrame oso ton dunaton klutera th thesh sthn opoia vrisketai o hlios ana pasa stigmh.
+
+//En sunexeia, exoume 2 moterakia - servo , me ta opoia kateuthunoume ton prosanatolismo ths epifaneias
+//ston axona x (panw katw) kai sotn aksona z (deksia aristera)
+
+#include <Servo.h>
+
+void UpDown();//arxikopoihsh ths sunarthshs gia kateuhuynsh ths epifanias panw katw
+void LeftRight();//arxikopoihsh ths sunarthshs gia kateuhuynsh ths epifanias aristera deksia
+Servo servo1;
+Servo servo2;
+
+void setup() {
+
+  servo1.attach(9);
+  servo2.attach(10); 
+
+  servo1.write(90); //setaroume arxika ta 2 servo stis 90 moires
+  servo2.write(90); 
+  
+  delay(500);
+
+  
+}
+
+
+void loop() {
+
+  int sensorTop = analogRead(A0);// setaroume tis aisuhthres gia th lhpsh fwtos
+  int sensorBottom = analogRead(A1);
+  int sensorLeft = analogRead(A3);
+  int sensorRight = analogRead(A4);
+  
+  int sensorTest1 = sensorTop - sensorBottom;// sugkrinei th diafora tou panw kai katw aisththra
+  int sensorTest2 = sensorBottom - sensorTop;// sugkrinei th diafora tou katw kai panw aisththra
+  int sensorTest3 = sensorLeft - sensorRight;// sugkrinei th diafora tou aristera kai deksia aisththra
+  int sensorTest4 = sensorRight - sensorLeft;// sugkrinei th diafora tou aristera kai toy deksia aisththra
+
+
+  if ((sensorTest1 >= 0)) // kai kapou edw kskiname ta teest an h timh panw aisthhra einai megaluytera tou katw
+  {
+    UpDown(sensorTop, sensorBottom);// kaloume th sinarthsh wste na metakinhsoume thn epifaneia 
+  }
+
+  if ((sensorTest2 >= 0)) // antistoixa parakatw
+  {
+    UpDown(sensorTop, sensorBottom);
+  }
+
+  if ((sensorTest3 >= 0))
+  {
+    LeftRight(sensorLeft, sensorRight);
+  }
+
+  if ((sensorTest4 >= 0)) 
+  {
+    LeftRight(sensorLeft, sensorRight);
+  }
+  int pos1 = servo1.read();
+  int pos2 = servo2.read();
+  
+  delay(500); //anamonh merika ms gia thn anaprosarmogh
+}
+
+void UpDown(int sensorTop, int sensorBottom) {
+
+  int pos1 = servo1.read(); // diabazei thn timh tou servo 1
+
+  if (sensorTop < sensorBottom) 
+  {
+    pos1 = --pos1; // allakse thn gwnia kata -1
+  }
+  else// ean h timh tou katw eiani megaluterh tou panw aisthhthra
+  {
+    pos1 = ++pos1;// allakse thn gwnia +1
+  }
+  servo1.write(pos1); 
+
+}
+
+// synarthsh gia allagh ths kateuthunshs deksia aristera pros ton hlio.
+void LeftRight(int sensorLeft, int sensorRight) {
+
+  int pos2 = servo2.read(); 
+  
+  if (sensorLeft < sensorRight) 
+  {
+    pos2 = --pos2;
+  }
+  else
+  {
+    pos2 = pos2 + 1;
+  }
+  servo2.write(pos2); 
+}
